@@ -1,0 +1,91 @@
+/*
+    Community Cloud System Class
+ 
+    @filename : apple.pn.class.php
+    @author   : kerash
+    @date     : 2013.06.26
+    Apple Push Notification Service code
+    [Push notification through APNs in php]
+ */
+class ApplePNs
+{
+    // Apple Push Notification Server path for push notification 
+    var $ApplePushNotificationServer = "ssl://gateway.push.apple.com:2195";
+ 
+    // Apple .pem file name
+    var $PEMfile = "";
+    // .pem pass phrase
+    var $PEMpassphrase = "";
+ 
+    // notify sound
+    var $aps_sound = "default";
+    // notify badge
+    var $aps_badge = "0";
+ 
+    function __Construct($pem)
+    {
+        if(!empty($pem))
+        {
+            if(strrpos($pem,".pem")===FALSE) {
+                $pem .= ".pem";
+            }
+            $this-&gt;PEMfile = $pem;
+        }
+    }
+ 
+    function set_pem  ($pem)   { $this-&gt;PEMfile = $pem; }
+    function set_pass ($passphrase) { $this-&gt;PEMpassphrase = $passphrase; }
+    function set_sound($sound) {$this-&gt;aps_sound = $sound; }
+    function set_badge($badge) {$this-&gt;aps_badge = $badge; }
+ 
+    function pushNotification($devices , $msg , $ntfyType = "")
+    {
+ 
+        $device_id  = $devices;
+        $message    = $msg;
+        $notifyType = $ntfyType;
+ 
+        /* if data is null , then return false */
+        if( count($device_id) &lt;= 0 or trim($message) == "")
+        {             return false;         }
+ 
+         $ctx = stream_context_create();
+         stream_context_set_option($ctx, 'ssl', 'local_cert', $this-&gt;PEMfile);
+        if($this-&gt;PEMpassphrase!=""){
+          stream_context_set_option($ctx, 'ssl', 'passphrase', $this-&gt;PEMpassphrase);
+        }
+ 
+        $fp = stream_socket_client( $this-&gt;ApplePushNotificationServer, $err, $errstr, 60, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
+ 
+        if (!$fp) { return false; }
+ 
+        $aps_struct['aps'] = array(
+            'alert' =&gt; $message,
+            'badge' =&gt; $this-&gt;aps_badge,
+            'sound' =&gt; $this-&gt;aps_sound
+        );
+ 
+        if(!empty($notifyType))
+        {
+              $aps_struct["dataType"] = $notifyType;
+        }
+        $payload = json_encode($aps_struct);
+ 
+        // Build the binary notification
+        $msg = chr(0) . pack('n', 32) . pack('H*', $device_id) . pack('n', strlen($payload)) . $payload;
+        // Send it to the server
+        $result = fwrite($fp, $msg, strlen($msg));
+ 
+        // Close the connection to the server
+        fclose($fp);
+ 
+        if (!$result)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+}
