@@ -29,14 +29,14 @@ class ApplePNs
             if(strrpos($pem,".pem")===FALSE) {
                 $pem .= ".pem";
             }
-            $this-&gt;PEMfile = $pem;
+            $this->PEMfile = $pem;
         }
     }
  
-    function set_pem  ($pem)   { $this-&gt;PEMfile = $pem; }
-    function set_pass ($passphrase) { $this-&gt;PEMpassphrase = $passphrase; }
-    function set_sound($sound) {$this-&gt;aps_sound = $sound; }
-    function set_badge($badge) {$this-&gt;aps_badge = $badge; }
+    function set_pem  ($pem)   { $this->PEMfile = $pem; }
+    function set_pass ($passphrase) { $this->PEMpassphrase = $passphrase; }
+    function set_sound($sound) {$this->aps_sound = $sound; }
+    function set_badge($badge) {$this->aps_badge = $badge; }
  
     function pushNotification($devices , $msg , $ntfyType = "")
     {
@@ -50,19 +50,19 @@ class ApplePNs
         {             return false;         }
  
          $ctx = stream_context_create();
-         stream_context_set_option($ctx, 'ssl', 'local_cert', $this-&gt;PEMfile);
-        if($this-&gt;PEMpassphrase!=""){
-          stream_context_set_option($ctx, 'ssl', 'passphrase', $this-&gt;PEMpassphrase);
+         stream_context_set_option($ctx, 'ssl', 'local_cert', $this->PEMfile);
+        if($this->PEMpassphrase!=""){
+          stream_context_set_option($ctx, 'ssl', 'passphrase', $this->PEMpassphrase);
         }
  
-        $fp = stream_socket_client( $this-&gt;ApplePushNotificationServer, $err, $errstr, 60, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
+        $fp = stream_socket_client( $this->ApplePushNotificationServer, $err, $errstr, 60, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
  
         if (!$fp) { return false; }
  
         $aps_struct['aps'] = array(
-            'alert' =&gt; $message,
-            'badge' =&gt; $this-&gt;aps_badge,
-            'sound' =&gt; $this-&gt;aps_sound
+            'alert' => $message,
+            'badge' => $this->aps_badge,
+            'sound' => $this->aps_sound
         );
  
         if(!empty($notifyType))
