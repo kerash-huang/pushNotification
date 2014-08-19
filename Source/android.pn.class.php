@@ -25,7 +25,7 @@ Class AndroidPNs
  
   function __Construct ( $apiKey )
   {
-        $this-&gt;GOOGLE_API_KEY = $apiKey;
+        $this->GOOGLE_API_KEY = $apiKey;
   }
  
   /* the main function to send message */
@@ -47,19 +47,19 @@ Class AndroidPNs
       /* if data is null , then return false */
       if( count($device_id) &lt;= 0 or trim($message) == "") { return false; }
        $post_fields = array(
-            "registration_ids"=&gt;$device_id,
-            "data" =&gt; array("dataType"=&gt;$notifyType,"message"=&gt;$message)
+            "registration_ids"=>$device_id,
+            "data" => array("dataType"=>$notifyType,"message"=>$message)
        );
  
       /* initial the curl object */
       $curl = curl_init();
-      curl_setopt($curl , CURLOPT_URL , $this-&gt;GOOGLE_CLOUD_MESSAGING);
+      curl_setopt($curl , CURLOPT_URL , $this->GOOGLE_CLOUD_MESSAGING);
       curl_setopt($curl , CURLOPT_POST , true );
       curl_setopt($curl , CURLOPT_RETURNTRANSFER , true );
       curl_setopt($curl , CURLOPT_SSL_VERIFYPEER , false );
       curl_setopt($curl , CURLOPT_HTTPHEADER  , 
-            array( "Content-Type: ".$this-&gt;contentType ,
-                "Authorization: key=".$this-&gt;GOOGLE_API_KEY)
+            array( "Content-Type: ".$this->contentType ,
+                "Authorization: key=".$this->GOOGLE_API_KEY)
         );
       curl_setopt($curl , CURLOPT_POSTFIELDS , json_encode( $post_fields) );
       $pushResult = curl_exec( $curl );
