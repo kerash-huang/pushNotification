@@ -1,3 +1,4 @@
+<?php
 /*
     Community Cloud System Class
  
