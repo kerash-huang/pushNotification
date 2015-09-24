@@ -1,3 +1,4 @@
+<?php
 /*
 Community Cloud System Class
  
@@ -8,7 +9,7 @@ Community Cloud System Class
 Android Push Notification Service code
 [Push notification through GCM in php]
 */
-Class AndroidPNs
+class AndroidPNs
 {
   /*
     Set the api key for using push service.
@@ -23,7 +24,7 @@ Class AndroidPNs
   // content type for your data format
   var $contentType = "application/json";
  
-  function __Construct ( $apiKey )
+  function __construct ( $apiKey )
   {
         $this->GOOGLE_API_KEY = $apiKey;
   }
